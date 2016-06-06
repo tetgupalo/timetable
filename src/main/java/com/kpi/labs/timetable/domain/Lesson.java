@@ -5,10 +5,19 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 public class Lesson {
+    private String name;
     private List<Group> groups;
     private String auditory;
     private DateTime time;
     private Lecturer lecturer;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getAuditory() {
         return auditory;

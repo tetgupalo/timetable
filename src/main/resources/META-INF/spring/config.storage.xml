@@ -1,32 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <bean id="config.db.data.source" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-        <property name="url" value="${jdbc.dataSource.url}"/>
-        <property name="username" value="${jdbc.dataSource.username}"/>
-        <property name="password" value="${jdbc.dataSource.password}"/>
-        <property name="driverClassName" value="${jdbc.dataSource.driverClassName}"/>
-        <property name="initialSize" value="${jdbc.dataSource.initialSize}"/>
-        <property name="maxActive" value="${jdbc.dataSource.maxActive}"/>
-        <property name="maxIdle" value="${jdbc.dataSource.maxIdle}"/>
-        <property name="minIdle" value="${jdbc.dataSource.minIdle}"/>
-        <property name="maxWait" value="${jdbc.dataSource.maxWait}"/>
-        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.dataSource.timeBetweenEvictionRunsMillis}"/>
-        <property name="minEvictableIdleTimeMillis" value="${jdbc.dataSource.minEvictableIdleTimeMillis}"/>
-        <property name="testOnBorrow" value="${jdbc.dataSource.testOnBorrow}"/>
-        <property name="testOnReturn" value="${jdbc.dataSource.testOnReturn}"/>
-        <property name="validationQuery" value="${jdbc.dataSource.validationQuery}"/>
-        <property name="validationInterval" value="${jdbc.dataSource.validationInterval}"/>
-        <property name="removeAbandoned" value="${jdbc.dataSource.removeAbandoned}"/>
-        <property name="removeAbandonedTimeout" value="${jdbc.dataSource.removeAbandonedTimeout}"/>
-        <property name="logAbandoned" value="${jdbc.dataSource.logAbandoned}"/>
-        <property name="jmxEnabled" value="${jdbc.dataSource.jmxEnabled}"/>
-        <property name="jdbcInterceptors"
-                value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"/>
-    </bean>
+    <jdbc:embedded-database id="dataSource" type="H2">
+        <jdbc:script location="classpath:scripts/h2/db.sql"/>
+    </jdbc:embedded-database>
+
     <bean id="config.db.data.source.transaction.manager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="config.db.data.source"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>
