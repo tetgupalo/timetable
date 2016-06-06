@@ -1,0 +1,63 @@
+{
+  "configuration" : {
+    "name" : "Default",
+    "properties" : {
+      "property" : [
+        {
+          "name" : "Directory",
+          "value" : "../logs"
+        },
+        {
+          "name" : "FileName",
+          "value" : "timetable.log"
+        }
+      ]
+    },
+    "appenders" : {
+      "Console" : {
+        "name" : "Console",
+        "target" : "SYSTEM_OUT",
+        "PatternLayout" : {
+          "pattern" : "%d %5p [%t] %c{1} -%X{aid} %m%n"
+        }
+      },
+      "RollingFile" : {
+        "name" : "File",
+        "fileName" : "${Directory}/${FileName}",
+        "filePattern" : "${Directory}/${date:yyyy-MM}/timetable-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout" : {
+          "pattern" : "%d %5p [%t] %c{1} -%X{aid} %m%n"
+        },
+        "Policies" : {
+          "SizeBasedTriggeringPolicy" : {
+            "size" : "20 MB"
+          }
+        },
+        "DefaultRolloverStrategy" : {
+          "max" : "10"
+        }
+      }
+    },
+    "loggers" : {
+      "root" : {
+        "level" : "info",
+        "additivity": "false",
+        "appender-ref" : [
+          {
+            "ref" : "Console"
+          }
+        ]
+      },
+      "logger" : {
+        "additivity": "false",
+        "name" : "com.kpi.labs",
+        "level" : "debug",
+        "appender-ref" : [
+          {
+            "ref" : "Console"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:utils="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="config.jetty.jettyServer" class="org.eclipse.jetty.server.Server"
+            lazy-init="false" init-method="start" destroy-method="stop">
+        <constructor-arg index="0" ref="config.jetty.jettyServerThreadPool"/>
+        <property name="connectors">
+            <list>
+                <ref bean="config.jetty.jettyHttpServerChannelConnector"/>
+            </list>
+        </property>
+        <property name="handler">
+            <bean class="org.eclipse.jetty.server.handler.HandlerList">
+                <property name="handlers">
+                    <array>
+                        <ref bean="config.jetty.jettyContextHandler"/>
+                    </array>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="config.jetty.jettyServerThreadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+        <constructor-arg index="0" value="${jetty.max_thread}"/>
+        <constructor-arg index="1" value="${jetty.min_thread}"/>
+        <constructor-arg index="2" value="${jetty.thread.idle.timeout}"/>
+        <constructor-arg index="3">
+            <bean class="org.eclipse.jetty.util.BlockingArrayQueue">
+                <constructor-arg index="0" value="${jetty.thread.queue.capacity}"/>
+                <constructor-arg index="1" value="${jetty.thread.queue.growBy}"/>
+                <constructor-arg index="2" value="${jetty.thread.queue.max.capacity}"/>
+            </bean>
+        </constructor-arg>
+        <property name="name" value="jetty-thread"/>
+    </bean>
+
+    <!--HTTP Factory configuration-->
+    <bean id="config.jetty.httpConfiguration" class="org.eclipse.jetty.server.HttpConfiguration">
+        <property name="sendServerVersion" value="false"/>
+        <property name="securePort" value="${jetty.ssl.port}"/>
+        <property name="secureScheme" value="https"/>
+        <property name="customizers">
+            <list>
+                <bean class="org.eclipse.jetty.server.SecureRequestCustomizer"/>
+            </list>
+        </property>
+        <property name="persistentConnectionsEnabled" value="true"/>
+        <property name="blockingTimeout" value="${jetty.http.blocking.timeout:-1}"/>
+        <property name="outputBufferSize" value="${jetty.http.output.buffer:32768}"/>
+        <property name="delayDispatchUntilContent" value="${jetty.http.dispatch.content:false}"/>
+    </bean>
+
+    <!-- Server connectors -->
+    <bean id="config.jetty.jettyHttpServerChannelConnector" class="org.eclipse.jetty.server.ServerConnector">
+        <constructor-arg index="0" ref="config.jetty.jettyServer"/>
+        <constructor-arg index="1">
+            <bean class="org.eclipse.jetty.server.HttpConnectionFactory">
+                <constructor-arg index="0" ref="config.jetty.httpConfiguration"/>
+            </bean>
+        </constructor-arg>
+        <property name="port" value="${jetty.port}"/>
+        <property name="idleTimeout" value="${jetty.nio.idle.timeout}"/>
+        <property name="acceptQueueSize" value="${jetty.accepted.queue.size}"/>
+    </bean>
+
+    <!-- Context Handler -->
+    <bean id="config.jetty.jettyContextHandler" class="com.kpi.labs.timetable.beans.SpringSecurityInitializingServletContextHandler">
+        <property name="resourceBase" value="."/>
+        <property name="contextPath" value="/"/>
+        <property name="servletHandler">
+            <bean class="org.eclipse.jetty.servlet.ServletHandler">
+                <property name="startWithUnavailable" value="false"/>
+                <property name="servlets">
+                    <list>
+                        <bean class="org.eclipse.jetty.servlet.ServletHolder">
+                            <property name="name" value="DispatcherServlet"/>
+                            <property name="servlet">
+                                <bean class="org.springframework.web.servlet.DispatcherServlet">
+                                    <property name="contextConfigLocation" value="classpath:META-INF/spring/config.web.xml"/>
+                                    <property name="contextInitializers">
+                                        <list>
+                                            <bean class="com.kpi.labs.timetable.beans.ChildApplicationContextInitializer"/>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </property>
+                            <property name="asyncSupported" value="true"/>
+                        </bean>
+                    </list>
+                </property>
+                <property name="servletMappings">
+                    <list>
+                        <bean class="org.eclipse.jetty.servlet.ServletMapping">
+                            <property name="pathSpecs" value="/*"/>
+                            <property name="servletName" value="DispatcherServlet"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <utils:list id="connectionFactories">
+        <bean class="org.eclipse.jetty.server.HttpConnectionFactory">
+            <constructor-arg index="0" ref="config.jetty.httpConfiguration"/>
+        </bean>
+    </utils:list>
+</beans>
