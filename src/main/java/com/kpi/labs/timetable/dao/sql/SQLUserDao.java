@@ -18,7 +18,7 @@ import com.kpi.labs.timetable.domain.UserRole;
 @Repository
 public class SQLUserDao implements CRUD<User, Integer> {
     private static final Logger LOG = LoggerFactory.getLogger(SQLUserDao.class);
-    private static final String INSERT_USER_SQL = "INSERT INTO \"USER\" (USER_NAME, PASSWORD, ROLE) VALUES (?,?,?)";
+    private static final String INSERT_USER_SQL = "INSERT INTO \"USER\" (USER_NAME, ROLE) VALUES (?,?)";
     private static final String LOAD_USER_SQL = "SELECT * FROM \"USER\" WHERE USER_ID=?";
     private static final String LOAD_ALL_USERS_SQL = "SELECT * FROM \"USER\"";
     private static final String LOAD_USER_ID = "SELECT USER_ID FROM \"USER\" WHERE USER_NAME=?";
@@ -30,14 +30,12 @@ public class SQLUserDao implements CRUD<User, Integer> {
     public Integer create(User element) {
         jdbc.execute(INSERT_USER_SQL, (PreparedStatementCallback) ps -> {
             ps.setObject(1, element.getName());
-            ps.setObject(2, element.getPassword());
-            ps.setObject(3, element.getRole().name());
+            ps.setObject(2, element.getRole().name());
             ps.execute();
             return null;
         });
         LOG.info("Insert new User - {} with role - {}", element.getName(), element.getRole().name());
-        Integer userId = jdbc.queryForObject(LOAD_USER_ID, new Object[]{ element.getName() }, Integer.class);
-        return userId;
+        return loadUserIdByName(element.getName());
     }
 
     @Override
@@ -62,12 +60,19 @@ public class SQLUserDao implements CRUD<User, Integer> {
         });
     }
 
+    protected Integer loadUserIdByName(String name) {
+        return jdbc.queryForObject(LOAD_USER_ID, new Object[]{ name }, Integer.class);
+    }
+
     protected User mapUser(ResultSet rs) throws SQLException {
-        User user = new User();
-        user.setName(rs.getString("USER_NAME"));
-        user.setRole(UserRole.valueOf(rs.getString("Role")));
-        user.setId(rs.getInt("USER_ID"));
-        return user;
+        if (rs.next()) {
+            User user = new User();
+            user.setName(rs.getString("USER_NAME"));
+            user.setRole(UserRole.valueOf(rs.getString("Role")));
+            user.setId(rs.getInt("USER_ID"));
+            return user;
+        }
+        return null;
     }
 }
 

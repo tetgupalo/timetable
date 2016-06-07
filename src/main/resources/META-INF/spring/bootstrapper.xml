@@ -5,4 +5,5 @@
     <import resource="config.security.xml"/>
     <import resource="config.jetty.xml"/>
     <import resource="config.storage.xml"/>
+    <import resource="config.service.xml"/>
 </beans>

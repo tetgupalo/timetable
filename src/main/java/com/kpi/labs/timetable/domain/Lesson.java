@@ -1,12 +1,10 @@
 package com.kpi.labs.timetable.domain;
 
-import org.joda.time.DateTime;
-
 public class Lesson {
     private Integer id;
     private String name;
     private String auditory;
-    private DateTime time;
+    private String time;
     private Lecturer lecturer;
 
     public Integer getId() {
@@ -33,11 +31,11 @@ public class Lesson {
         this.auditory = auditory;
     }
 
-    public DateTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(DateTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

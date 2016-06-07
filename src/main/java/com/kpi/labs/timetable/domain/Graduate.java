@@ -2,9 +2,27 @@ package com.kpi.labs.timetable.domain;
 
 public class Graduate {
     private Integer id;
+    private Student student;
+    private Lecturer lecturer;
     private Lesson lesson;
     private String name;
     private String score;
+
+    public Lecturer getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(Lecturer lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
     public Integer getId() {
         return id;

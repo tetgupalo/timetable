@@ -11,17 +11,19 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Repository;
 
-import com.kpi.labs.timetable.dao.CRUD;
+import com.kpi.labs.timetable.dao.LecturerDAO;
 import com.kpi.labs.timetable.domain.Lecturer;
 import com.kpi.labs.timetable.domain.UserRole;
 
 @Repository
-public class SQLLecturerDao implements CRUD<Lecturer, Integer> {
+public class SQLLecturerDao implements LecturerDAO {
     private static final Logger LOG = LoggerFactory.getLogger(SQLLecturerDao.class);
     private static final String INSERT_LECTURER_SQL = "INSERT INTO \"LECTURER\" (USER_ID, DEGREE) VALUES (?,?)";
     private static final String LOAD_ALL_LECTURERS = "SELECT * FROM \"LECTURER\" l , \"USER\" u WHERE u.USER_ID=l.USER_ID";
     private static final String LOAD_LECTURER = "SELECT * FROM \"LECTURER\" l , \"USER\" u WHERE u.USER_ID=l.USER_ID AND l.LECTURER_ID=?";
-    private static final String LOAD_LECTURER_ID = "SELECT LECTURER_ID FROM \"LECTURER\" USER_ID=?";
+    private static final String LOAD_LECTURER_ID = "SELECT LECTURER_ID FROM \"LECTURER\" WHERE USER_ID=?";
+    private static final String LOAD_LECTURER_BY_NAME = "SELECT * FROM \"LECTURER\" l , \"USER\" u WHERE u.USER_ID=l.USER_ID AND l"
+            + ".USER_ID=?";
 
     @Autowired
     private JdbcOperations jdbc;
@@ -34,6 +36,7 @@ public class SQLLecturerDao implements CRUD<Lecturer, Integer> {
         jdbc.execute(INSERT_LECTURER_SQL, (PreparedStatementCallback) ps -> {
             ps.setObject(1, userId);
             ps.setObject(2, element.getDegree());
+            ps.execute();
             return null;
         });
         Integer lecturerId = jdbc.queryForObject(LOAD_LECTURER_ID, new Object[]{ userId }, Integer.class);
@@ -63,14 +66,25 @@ public class SQLLecturerDao implements CRUD<Lecturer, Integer> {
         });
     }
 
+    @Override
+    public Lecturer loadLecturerByName(String name) {
+        Integer userId = userDao.loadUserIdByName(name);
+        return jdbc.query(LOAD_LECTURER_BY_NAME, new Object[]{ userId }, rs -> {
+            return mapLecturer(rs);
+        });
+    }
+
     private Lecturer mapLecturer(ResultSet rs) throws SQLException {
-        Lecturer lecturer = new Lecturer();
-        lecturer.setName(rs.getString("USER_NAME"));
-        lecturer.setRole(UserRole.valueOf(rs.getString("Role")));
-        lecturer.setId(rs.getInt("USER_ID"));
-        lecturer.setLecturerId(rs.getInt("LECTURER_ID"));
-        lecturer.setDegree(rs.getString("DEGREE"));
-        return lecturer;
+        if (rs.next()) {
+            Lecturer lecturer = new Lecturer();
+            lecturer.setName(rs.getString("USER_NAME"));
+            lecturer.setRole(UserRole.valueOf(rs.getString("Role")));
+            lecturer.setId(rs.getInt("USER_ID"));
+            lecturer.setLecturerId(rs.getInt("LECTURER_ID"));
+            lecturer.setDegree(rs.getString("DEGREE"));
+            return lecturer;
+        }
+        return null;
     }
 }
 

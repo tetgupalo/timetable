@@ -9,7 +9,7 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
     <import resource="config.web.converters.xml"/>
-    <context:component-scan base-package="com.kpi.labs.timetable.ws"/>
+    <context:component-scan base-package="com.kpi.labs.timetable.ws" annotation-config="true"/>
     <context:annotation-config/>
     <mvc:resources location="classpath:/staticResources/" mapping="/static/**"/>
 

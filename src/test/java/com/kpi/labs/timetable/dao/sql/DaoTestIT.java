@@ -2,6 +2,7 @@ package com.kpi.labs.timetable.dao.sql;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class DaoTestIT {
 
     @Test
     public void insertStudent() throws Exception {
+        System.out.println(new DateTime());
         Student student = new Student();
         student.setName("123");
         student.setPassword("123");

@@ -1,50 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <!-- Following two handlers to pick up @RequestMapping methods and classes
-            Used instead of mvc:annotation-driven with custom converter declaration -->
+        Used instead of mvc:annotation-driven with custom converter declaration -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-        <property name="webBindingInitializer">
-            <bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
-                <property name="conversionService" ref="config.web.converters.conversionService"/>
-            </bean>
-        </property>
         <property name="messageConverters">
             <list>
-                <ref bean="config.web.converters.jsonHttpMessageConverter"/>
-                <ref bean="config.web.converters.stringHttpMessageConverter"/>
+                <ref bean="jsonHttpMessageConverter"/>
+                <ref bean="stringHttpMessageConverter"/>
             </list>
         </property>
     </bean>
 
-    <bean id="config.web.converters.conversionService"
-            class="org.springframework.context.support.ConversionServiceFactoryBean">
-    </bean>
 
-    <bean id="config.web.converters.jsonHttpMessageConverter"
+    <bean id="jsonHttpMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="prettyPrint" value="true"/>
-        <property name="objectMapper" ref="config.web.converters.objectMapper"/>
-    </bean>
-
-    <bean id="config.web.converters.objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
-        <property name="annotationIntrospector">
-            <bean class="com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair">
-                <constructor-arg index="0">
-                    <bean class="com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector"/>
-                </constructor-arg>
-                <constructor-arg index="1">
-                    <bean class="com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector">
-                        <constructor-arg>
-                            <bean class="com.fasterxml.jackson.databind.type.TypeFactory"
-                                    factory-method="defaultInstance"/>
-                        </constructor-arg>
-                    </bean>
-                </constructor-arg>
-            </bean>
+        <property name="objectMapper">
+            <bean class="com.fasterxml.jackson.databind.ObjectMapper"></bean>
         </property>
     </bean>
 
-    <bean id="config.web.converters.stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"/>
+    <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"/>
+
 </beans>
