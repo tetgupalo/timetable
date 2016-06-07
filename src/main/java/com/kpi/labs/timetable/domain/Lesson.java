@@ -1,13 +1,10 @@
 package com.kpi.labs.timetable.domain;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 
 public class Lesson {
     private Integer id;
     private String name;
-    private List<Group> groups;
     private String auditory;
     private DateTime time;
     private Lecturer lecturer;
@@ -50,14 +47,6 @@ public class Lesson {
 
     public void setLecturer(Lecturer lecturer) {
         this.lecturer = lecturer;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
     }
 }
 

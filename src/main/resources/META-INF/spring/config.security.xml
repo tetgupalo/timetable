@@ -8,7 +8,7 @@
         <security:authentication-provider>
             <security:user-service>
                 <security:user name="student" password="student" authorities="STUDENT"/>
-                <security:user name="teacher" password="teacher" authorities="TEACHER"/>
+                <security:user name="teacher" password="teacher" authorities="LECTURER"/>
             </security:user-service>
         </security:authentication-provider>
     </security:authentication-manager>

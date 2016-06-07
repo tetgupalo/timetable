@@ -3,8 +3,17 @@ package com.kpi.labs.timetable.domain;
 import java.util.List;
 
 public class Student extends User {
-    private List<Graduate> graduates;
     private Group group;
+    private List<Graduate> graduates;
+    private List<Lesson> lessons;
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 
     public List<Graduate> getGraduates() {
         return graduates;

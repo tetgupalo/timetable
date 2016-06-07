@@ -3,7 +3,7 @@ package com.kpi.labs.timetable.dao;
 import java.util.List;
 
 public interface CRUD<T, K> {
-    void create(T element);
+    K create(T element);
 
     void update(T element);
 

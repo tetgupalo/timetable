@@ -14,7 +14,7 @@ import com.kpi.labs.timetable.domain.UserRole;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:META-INF/spring/config.storage.xml" })
-public class SQLStudentDAOImplTestIT {
+public class DaoTestIT {
     @Autowired
     private StudentDAO studentDAO;
 
