@@ -7,7 +7,8 @@
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider>
             <security:user-service>
-                <security:user name="admin" password="admin" authorities="ROLE_ADMIN"/>
+                <security:user name="student" password="student" authorities="STUDENT"/>
+                <security:user name="teacher" password="teacher" authorities="TEACHER"/>
             </security:user-service>
         </security:authentication-provider>
     </security:authentication-manager>

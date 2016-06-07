@@ -3,11 +3,20 @@ package com.kpi.labs.timetable.domain;
 import java.util.List;
 
 public class Group {
+    private Integer id;
     private String name;
     private int amountOfStudents;
     private int year;
     private List<Student> students;
     private List<Lesson> lessons;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public List<Lesson> getLessons() {
         return lessons;
